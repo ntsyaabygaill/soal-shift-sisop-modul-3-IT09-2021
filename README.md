@@ -37,7 +37,44 @@ Muhammad Naufal Imantyasto | 05111940000041
 (f).Command "see" untuk melihat isi file.tsv <br>
 (g).Command "find" untuk menemukan file yang memiliki nama tertentu <br>
 (h).running.log untuk mencatat penambahan atau pengurangan file <br>
+### Cara Pengerjaan
+#### Library
+Berikut adalah library yang kami gunakan
+```
+#include <stdio.h>
+#include <sys/socket.h>
+#include <stdlib.h>
+#include <netinet/in.h>
+#include <string.h>
+#include <unistd.h>
+#include <arpa/inet.h>
+#include <dirent.h>
+```
 #### 1A
+```
+printf("Pilih menu :\n1.Register\n2.Login\n");
+    scanf("%d",&pil);
+    if (pil==1){
+        send(sock , regist , strlen(regist) , 0 );
+    }
+    else if (pil==2){
+        send(sock , login , strlen(login) , 0 );
+    }
+    valread = read( sock , buffer, 1024);
+    if (strcmp(buffer,"sukses")==0){
+        memset(buffer,0,sizeof(buffer));
+        printf("Masukkan id : ");
+        scanf("%d",&id);
+        printf("Masukkan password : ");
+        scanf("%s",pass);
+        sprintf(idc,"%d",id);
+        strcat(kirim,idc);
+        strcat(kirim,":");
+        strcat(kirim,pass);
+        //printf("%s",kirim);
+        send(sock , kirim , strlen(kirim) , 0 );
+        valread = read( sock , buffer, 1024);
+```
 #### 1B
 #### 1C
 #### 1D
@@ -51,6 +88,7 @@ Muhammad Naufal Imantyasto | 05111940000041
 (a).Membuat program perkalian matrix (4x3 dengan 3x6) dan menampilkan hasilnya. Matriks nantinya akan berisi angka 1-20 (tidak perlu dibuat filter angka). <br>
 (b).Membuat program dengan menggunakan matriks output dari program sebelumnya (program soal2a.c). Kemudian matriks tersebut akan dilakukan perhitungan dengan matrix baru (input user) sebagai berikut contoh perhitungan untuk matriks yang a da. Perhitungannya adalah setiap cel yang berasal dari matriks A menjadi angka untuk faktorial, lalu cel dari matriks B menjadi batas maksimal faktorialnya matri(dari paling besar ke paling kecil). <br>
 (c).Program (soal2c.c) untuk mengecek 5 proses teratas apa saja yang memakan resource komputernya <br>
+### Cara Pengerjaan
 #### 2A
 #### 2B
 #### 2C
@@ -62,6 +100,7 @@ Muhammad Naufal Imantyasto | 05111940000041
 (c).Program menerima opsi * <br>
 (d).Semua file harus berada di dalam folder, jika terdapat file yang tidak memiliki ekstensi, file disimpan dalam folder “Unknown”. Jika file hidden, masuk folder “Hidden”. <br>
 (e).Setiap 1 file yang dikategorikan dioperasikan oleh 1 thread agar bisa berjalan secara paralel sehingga proses kategori bisa berjalan lebih cepat. <br>
+### Cara Pengerjaan
 #### 3A
 #### 3B
 #### 3C
