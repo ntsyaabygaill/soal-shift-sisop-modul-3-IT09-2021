@@ -40,7 +40,7 @@ Muhammad Naufal Imantyasto | 05111940000041
 ### Cara Pengerjaan
 #### Library
 Berikut adalah library yang kami gunakan
-```
+``` C
 #include <stdio.h>
 #include <sys/socket.h>
 #include <stdlib.h>
@@ -51,7 +51,7 @@ Berikut adalah library yang kami gunakan
 #include <dirent.h>
 ```
 #### 1A
-```
+``` C
 printf("Pilih menu :\n1.Register\n2.Login\n");
     scanf("%d",&pil);
     if (pil==1){
