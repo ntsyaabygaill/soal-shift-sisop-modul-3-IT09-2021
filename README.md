@@ -345,7 +345,82 @@ void send_file(FILE *fp, int sockfd)
 }
 ```
 #### 1E
+##### Client
+Ketika client memasukkan command delete maka akan dikirimkan pesan kepada server untuk memasuki mode delete, dan client meminta nama file apa yang akan dihapus dan dikirimkan ke server.
+```C
+else if(strcmp(cmd,"delete")==0){
+    send(sock , del , strlen(del) , 0 ); //pesan
+    printf("Masukkan judul: ");
+    scanf("%s",delete);
+    send(sock , delete , strlen(delete) , 0 );
+}
+```
+##### Server
+```C
+else if (strcmp(buffer,"delete")==0){
+	memset(buffer,0,sizeof(buffer));
+	valread = read(new_socket , buffer, 1024); //file
+	strcpy(file_del,buffer);
+	int flag;
+	char new_name[200]={0};
+	strcat(new_name,"old-");
+	strcat(new_name,file_del);
+	chdir("FILES");
+	flag = rename(file_del,new_name);
+	if(flag == 0) {
+	    strcat(t_log,"Hapus : ");
+	    strcat(t_log,namafile);
+	    strcat(t_log," (");
+	    strcat(t_log,isi);
+	    strcat(t_log,")\n");
+	    if(log){
+		fputs(t_log,log);
+	    }
+	} else {
+	    printf("Error: unable to delete the file");
+	}
+}
+```
+Ketika memasuki mode delete server akan melakukan rename ke file yang bersangkutan dengan format ```old-nama.ekstensi``` setelah itu menulis di file log, jika file tidak ada maka akan dikirimkan pesan error.
 #### 1F
+##### Client
+```C
+else if(strcmp(cmd,"see")==0){
+    send(sock , see , strlen(see) , 0 );
+    memset(buffer,0,sizeof(buffer));
+    valread = read( sock , buffer, 1024);
+    strcat(isi,buffer);
+    printf("\n%s",isi);
+}
+```
+##### Server
+```
+else if (strcmp(buffer,"see")==0){
+	char * buf = 0;
+	char content[1000]={0};
+	long length;
+	FILE * f = fopen ("files.tsv", "rb");
+
+	if (f)
+	{
+		fseek (f, 0, SEEK_END);
+		length = ftell (f);
+		fseek (f, 0, SEEK_SET);
+		buf = malloc (length);
+		if (buf)
+		{
+		    fread (buf, 1, length, f);
+		}
+		fclose (f);
+	}
+
+	if (buf)
+	{
+	    strcpy(content,buf);
+	    send(new_socket , content , strlen(content) , 0 );
+	}
+}
+```
 #### 1G
 #### 1H
 
