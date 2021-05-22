@@ -353,35 +353,41 @@ else if(strcmp(cmd,"delete")==0){
     printf("Masukkan judul: ");
     scanf("%s",delete);
     send(sock , delete , strlen(delete) , 0 );
+    memset(buffer,0,sizeof(buffer));
+    valread = read( sock , buffer, 1024);
+    if(buffer!=NULL){
+	printf("%s",buffer);
+    }
 }
 ```
+Jika file tidak ada maka pesan error dari server akan ditampilkan kepada client.
 ##### Server
 ```C
 else if (strcmp(buffer,"delete")==0){
-	memset(buffer,0,sizeof(buffer));
-	valread = read(new_socket , buffer, 1024); //file
-	strcpy(file_del,buffer);
-	int flag;
-	char new_name[200]={0};
-	strcat(new_name,"old-");
-	strcat(new_name,file_del);
-	chdir("FILES");
-	flag = rename(file_del,new_name);
-	if(flag == 0) {
-	    strcat(t_log,"Hapus : ");
-	    strcat(t_log,namafile);
-	    strcat(t_log," (");
-	    strcat(t_log,isi);
-	    strcat(t_log,")\n");
-	    if(log){
-		fputs(t_log,log);
-	    }
-	} else {
-	    printf("Error: unable to delete the file");
-	}
+memset(buffer,0,sizeof(buffer));
+valread = read(new_socket , buffer, 1024); //file
+strcpy(file_del,buffer);
+int flag;
+char new_name[200]={0};
+strcat(new_name,"old-");
+strcat(new_name,file_del);
+chdir("FILES");
+flag = rename(file_del,new_name);
+if(flag == 0) {
+    strcat(t_log,"Hapus : ");
+    strcat(t_log,namafile);
+    strcat(t_log," (");
+    strcat(t_log,isi);
+    strcat(t_log,")\n");
+    if(log){
+	fputs(t_log,log);
+    }
+} else {
+    send(new_socket , "file tidak ada\n" , strlen("file tidak ada\n") , 0 );
+}
 }
 ```
-Ketika memasuki mode delete server akan melakukan rename ke file yang bersangkutan dengan format ```old-nama.ekstensi``` setelah itu menulis di file log, jika file tidak ada maka akan dikirimkan pesan error.
+Ketika memasuki mode delete server akan melakukan rename ke file yang bersangkutan dengan format ```old-nama.ekstensi``` setelah itu menulis di file log, jika file tidak ada maka akan dikirimkan pesan error ```"file tidak ada"```.
 #### 1F
 ##### Client
 ```C
@@ -422,7 +428,96 @@ else if (strcmp(buffer,"see")==0){
 }
 ```
 #### 1G
+##### Client
+Ketika client memasukkan command find maka program akan meminta memasukkan judul, yang selanjutnya dikirim ke server, dan di print kembali hasil yang didapat dari server.
+```C
+else if(strcmp(cmd,"find")==0){
+    send(sock , find , strlen(find) , 0 );
+    printf("Masukkan judul: ");
+    scanf("%s",cari);
+    send(sock , cari , strlen(cari) , 0 );
+    //printf("%s\n%s",cmd,cari);
+    memset(buffer,0,sizeof(buffer));
+    valread = read( sock , buffer, 1024);
+    strcat(isi,buffer);
+    printf("\n%s",isi);
+}
+```
+##### Server
+```C
+else if (strcmp(buffer,"find")==0){
+memset(buffer,0,sizeof(buffer));
+// printf(" %s",buffer);
+valread = read(new_socket , buffer, 1024); //find nama
+//printf(" %s",buffer);
+strcat(cari,buffer);
+
+int o=0, z=0;
+DIR *d;
+struct dirent *dir;
+d = opendir("FILES");
+
+//Determine the number of files
+while((dir = readdir(d)) != NULL) {
+    if ( !strcmp(dir->d_name, ".") || !strcmp(dir->d_name, "..") )
+    {
+
+    } else {
+	o++;
+    }
+}
+rewinddir(d);
+
+char *filesList[o];
+
+//Put file names into the array
+while((dir = readdir(d)) != NULL) {
+    if ( !strcmp(dir->d_name, ".") || !strcmp(dir->d_name, "..") )
+    {}
+    else {
+	filesList[z] = (char*) malloc (strlen(dir->d_name)+1);
+	//strncpy (filesList[z],dir->d_name, strlen(dir->d_name) );
+	strcpy(filesList[z],dir->d_name);
+	z++;
+    }
+}
+rewinddir(d);
+
+for(z=0; z<o; z++){
+    if(strstr(filesList[z],cari)){
+	//printf("%s\n", filesList[z]);
+	if((strstr(filesList[z],"old-")==0)&&z>0){
+	strcat(hasil_cari,filesList[z]);
+	strcat(hasil_cari,"\n");}
+    }
+    send(new_socket , hasil_cari , strlen(hasil_cari) , 0 );
+}
+}
+```
+Server akan melakukan loop untuk menyimpan setiap nama yang ada dalam directory FILES, kemudian untuk mencocokkan nama file digunakan fungsi strstr, dan terdapat filter untuk file yang sudah dihapus (old-) dengan menggunakan strstr juga.
 #### 1H
+##### Penambahan File
+```C
+strcat(t_log,"Tambah : ");
+strcat(t_log,namafile);
+strcat(t_log," (");
+strcat(t_log,isi);
+strcat(t_log,")\n");
+if(log){
+	fputs(t_log,log);
+}
+```
+##### Pengurangan File
+```C
+trcat(t_log,"Hapus : ");
+strcat(t_log,namafile);
+strcat(t_log," (");
+strcat(t_log,isi);
+strcat(t_log,")\n");
+if(log){
+	fputs(t_log,log);
+}
+```
 
 ## Nomor 2
 ### Soal
@@ -431,8 +526,222 @@ else if (strcmp(buffer,"see")==0){
 (c).Program (soal2c.c) untuk mengecek 5 proses teratas apa saja yang memakan resource komputernya <br>
 ### Cara Pengerjaan
 #### 2A
+```C
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/shm.h>
+#include <sys/stat.h>
+#include <pthread.h>
+#include <sys/ipc.h>
+
+//deklarasi
+int (*value)[10];
+int hasil = 0;
+int matriks_A[10][10], matriks_B[10][10], baris_A=4, kolom_A=3, baris_B=3, kolom_B=6; // deklarasi array
+pthread_t thread1, thread2, thread3; // pembuatan thread
+
+void *input_matriks_A(void *arg);
+void *input_matriks_B(void *arg);
+
+// fungsi menghitung perkalian matriks
+void *perkalian_matriks(void *arg){
+   for(int i=0;i<baris_A;i++){
+      for(int j=0;j<kolom_B;j++){
+         for(int k=0;k<kolom_A;k++){
+            hasil+=matriks_A[i][k] * matriks_B[k][j]; //lakukan perhitungan perkalian matriks
+         }
+         value[i][j]= hasil; // menyimpanan hasil perkalian dalam var value
+         hasil = 0; // nilai dikembalikan 0 agar bisa menghitung nilai ulang
+      }
+   }
+   return NULL;
+}
+
+int main(){
+   //template shared memory 
+   key_t key = 1234;
+   int shmid = shmget(key, sizeof(int[10][10]), IPC_CREAT | 0666); //int [10][10] membuat matriks (array multidimensi)
+   value = shmat(shmid, 0, 0);
+
+   pthread_create(&thread1, NULL, input_matriks_A, NULL); // membuat thread 1 matriks A
+   pthread_join(thread1,NULL);
+
+   pthread_create(&thread2, NULL, input_matriks_B, NULL); // membuat thread 2 matriks B
+   pthread_join(thread2,NULL);
+
+   for(int i=0;i<baris_A;i++){ // sebanyak 4 baris
+      for(int j=0;j<kolom_B;j++){ // sebanyak 5 kolom
+         value[i][j]=0;
+      }
+      pthread_create(&thread3, NULL, perkalian_matriks, NULL); // membuat thread 3 untuk hasil perkalian
+      pthread_join(thread3,NULL);
+   }
+
+   //menampilkan hasil perkalian matriks
+   printf("Hasil perkalian dari matriks A dan B adalah: \n");
+   for(int i=0; i<baris_A; i++){ // sebanyak 4 baris
+      for(int j=0;j<kolom_B;j++){  // sebanyak 5 kolom
+         printf("%d\t", value[i][j]); // print per elemen diselat tab
+      }
+      printf("\n");
+   }
+}
+
+//matriks pertama
+void *input_matriks_A(void *arg) { //fungsi matriks pertama
+   matriks_A[0][0]=2; //baris 1 kolom 1
+   matriks_A[0][1]=1; //baris 1 kolom 2
+   matriks_A[0][2]=3; //baris 1 kolom 3
+   matriks_A[1][0]=4; //baris 2 kolom 1
+   matriks_A[1][1]=3; //baris 2 kolom 2
+   matriks_A[1][2]=1; //baris 2 kolom 3
+   matriks_A[2][0]=2; //baris 3 kolom 1
+   matriks_A[2][1]=1; //baris 3 kolom 2
+   matriks_A[2][2]=3; //baris 3 kolom 3
+   matriks_A[3][0]=4; //baris 4 kolom 1
+   matriks_A[3][1]=3; //baris 4 kolom 2
+   matriks_A[3][2]=2; //baris 4 kolom 2
+   return NULL;
+}
+
+//matriks kedua
+void *input_matriks_B(void *arg){ //fungsi matriks kedua
+   matriks_B[0][0]=4; //baris 1 kolom 1
+   matriks_B[0][1]=1; //baris 1 kolom 2
+   matriks_B[0][2]=2; //baris 1 kolom 3
+   matriks_B[0][3]=3; //baris 1 kolom 4
+   matriks_B[0][4]=1; //baris 1 kolom 5
+   matriks_B[0][5]=2; //baris 1 kolom 6
+   matriks_B[1][0]=2; //baris 2 kolom 1
+   matriks_B[1][1]=1; //baris 2 kolom 2
+   matriks_B[1][2]=3; //baris 2 kolom 3
+   matriks_B[1][3]=1; //baris 2 kolom 4
+   matriks_B[1][4]=3; //baris 2 kolom 5
+   matriks_B[1][5]=2; //baris 2 kolom 6
+   matriks_B[2][0]=1; //baris 3 kolom 1
+   matriks_B[2][1]=4; //baris 3 kolom 2
+   matriks_B[2][2]=3; //baris 3 kolom 3
+   matriks_B[2][3]=1; //baris 3 kolom 4
+   matriks_B[2][4]=2; //baris 3 kolom 5
+   matriks_B[2][5]=3; //baris 3 kolom 6
+   return NULL;
+}
+```
 #### 2B
+```C
+#include <stdio.h>
+#include <sys/ipc.h>
+#include <sys/shm.h>
+#include <unistd.h>
+#include <pthread.h>
+
+//deklarasi
+unsigned long long angka; // memakai unsigned long long agar banyak menampung angka 
+int baris = 4, kolom = 6; //baris 4 kolom 5
+
+unsigned long long factorial(unsigned long long a);
+void *faktorial(void *arg);
+
+int main(){
+    pthread_t thread;
+    //shared memory template
+    key_t key = 1234;
+    int (*value)[10];
+    int shmid = shmget(key, sizeof(int), IPC_CREAT | 0666);
+    value = shmat(shmid, 0, 0);
+
+    printf("Hasil perkalian dari matriks A dan B adalah: \n");
+    //menampilkan hasil perkalian matriks pada soal 4a
+    for(int i=0;i< 4;i++){
+        for(int j=0;j<6;j++){
+            printf("%d\t", value[i][j]);
+        }
+        printf("\n");
+    }
+    pthread_create(&thread, NULL, faktorial, NULL); // membuat thread faktorial 
+    pthread_join(thread,NULL); // join thread faktorial
+}
+
+unsigned long long factorial(unsigned long long a){  //fungsi menghitung faktorial tambah
+    if(a==0 || a==1) return 1;
+    else return a+ factorial(a-1); //pemanggilan fungsi factorial
+}
+
+//fungsi faktorial
+void *faktorial(void *arg){
+    //shared memory template 
+    key_t key = 1234;
+    int (*value)[10];
+    int shmid = shmget(key, sizeof(int), IPC_CREAT | 0666);
+    value = shmat(shmid, 0, 0);
+    
+    printf("Hasil faktorial pertambahan matriks ialah: \n");
+    
+    for(int i=0;i<baris;i++){ // perulangan untuk baris
+        for(int j=0;j<kolom;j++){ // perulangan untuk kolom
+            angka=value[i][j]; // faktorial dihitung per elemen matriks hasil perkalian
+            printf("%llu\t", factorial(angka)); // pemanggilan fungsi factorial untuk menghitung
+        }
+        printf("\n");
+    }
+    pthread_exit(0); // keluar thread
+}
+```
 #### 2C
+```C
+#include<stdio.h>
+#include<stdlib.h>
+#include<sys/types.h>
+#include<sys/stat.h>
+#include<unistd.h>
+#include<wait.h>
+#include<fcntl.h>
+
+void    loop_pipe(char ***cmd);
+
+int main()
+{
+  char *ps[] = {"ps", "aux", NULL};
+  char *sort[] = {"sort", "-nrk", "3,3", NULL};
+  char *head[] = {"head", "-5", NULL};
+  char **cmd[] = {ps, sort, head, NULL};
+
+  loop_pipe(cmd);
+  return (0);
+}
+
+void    loop_pipe(char ***cmd) 
+{
+  int   p[2];
+  pid_t pid;
+  int   fd_in = 0;
+
+  while (*cmd != NULL)
+    {
+      pipe(p);
+      if ((pid = fork()) == -1)
+        {
+          exit(EXIT_FAILURE);
+        }
+      else if (pid == 0)
+        {
+          dup2(fd_in, 0); //change the input according to the old one 
+          if (*(cmd + 1) != NULL)
+            dup2(p[1], 1);
+          close(p[0]); //menutup input pipe
+          execvp((*cmd)[0], *cmd);
+          exit(EXIT_FAILURE);
+        }
+      else
+        {
+          wait(NULL);
+          close(p[1]); //menutup output pipe
+          fd_in = p[0]; //menyimpan input untuk loop selanjutnya
+          cmd++;
+        }
+    }
+}
+```
 
 ## Nomor 3
 ### Soal
