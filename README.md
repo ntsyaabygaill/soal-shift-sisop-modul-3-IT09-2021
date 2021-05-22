@@ -51,6 +51,7 @@ Berikut adalah library yang kami gunakan
 #include <dirent.h>
 ```
 #### 1A
+##### Client
 ``` C
 printf("Pilih menu :\n1.Register\n2.Login\n");
     scanf("%d",&pil);
@@ -75,6 +76,29 @@ printf("Pilih menu :\n1.Register\n2.Login\n");
         send(sock , kirim , strlen(kirim) , 0 );
         valread = read( sock , buffer, 1024);
 ```
+Pada Client akan ditampilkan isian sebagai berikut :
+```
+Pilih menu :
+1.Register
+2.Login
+```
+Jika client memilih register mode register akan dikirimkan ke server, jika client memilih login mode login akan dikirimkan ke server. Setelah server berhasil men-set modenya ke mode login atau register, selanjutnya client akan diminta memasukkan id dan password :
+```
+Masukkan id :
+Masukkan password :
+```
+Setelah itu dengan fungsi ini
+```C
+sprintf(idc,"%d",id);
+strcat(kirim,idc);
+strcat(kirim,":");
+strcat(kirim,pass);
+```
+id dan password dibentuk dalam format
+```id:password```
+Selanjutnya format inilah yang dikirimkan kepada server
+##### Server
+
 #### 1B
 Membuka dan membuat file tsv
 ```C
