@@ -161,16 +161,18 @@ int main(int argc, char const *argv[]) {
                     scanf("%s",cari);
                     send(sock , cari , strlen(cari) , 0 );
                     //printf("%s\n%s",cmd,cari);
-                    // memset(buffer,0,sizeof(buffer));
-                    // valread = read( sock , buffer, 1024);
-                    // strcat(isi,buffer);
-                    // printf("\n%s",isi);
+                    memset(buffer,0,sizeof(buffer));
+                    valread = read( sock , buffer, 1024);
+                    strcat(isi,buffer);
+                    printf("\n%s",isi);
                 }
                 else if(strcmp(cmd,"delete")==0){
                     send(sock , del , strlen(del) , 0 ); //pesan
                     printf("Masukkan judul: ");
                     scanf("%s",delete);
                     send(sock , delete , strlen(delete) , 0 );
+                    valread = read( sock , buffer, 1024);
+                    printf("%s",buffer);
                 }
                 else if(strcmp(cmd,"download")==0){
                     send(sock , down , strlen(down) , 0 );
