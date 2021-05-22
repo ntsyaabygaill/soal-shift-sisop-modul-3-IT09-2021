@@ -171,8 +171,11 @@ int main(int argc, char const *argv[]) {
                     printf("Masukkan judul: ");
                     scanf("%s",delete);
                     send(sock , delete , strlen(delete) , 0 );
+                    memset(buffer,0,sizeof(buffer));
                     valread = read( sock , buffer, 1024);
-                    printf("%s",buffer);
+                    if(buffer!=NULL){
+                        printf("%s",buffer);
+                    }
                 }
                 else if(strcmp(cmd,"download")==0){
                     send(sock , down , strlen(down) , 0 );
