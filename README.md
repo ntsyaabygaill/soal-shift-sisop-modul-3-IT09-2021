@@ -76,6 +76,35 @@ printf("Pilih menu :\n1.Register\n2.Login\n");
         valread = read( sock , buffer, 1024);
 ```
 #### 1B
+Membuka dan membuat file tsv
+```C
+    FILE * tsv;
+    /* open the file for writing*/
+    tsv = fopen ("files.tsv","a+");
+```
+kami menggunakan fopen untuk membuat dan membuka ```files.tsv```, disini juga kami menggunakan mode ```a+``` yang berfungsi untuk append sehingga data akan terus di tulis tanpa di overwrite.
+```C
+strcat(tulis,"Publisher: ");
+strcat(tulis,publish);
+strcat(tulis,"\n");
+strcat(tulis,"Tahun Publikasi: ");
+strcat(tulis,tahun);
+strcat(tulis,"\n");
+strcat(tulis,"Filepath: ");
+strcat(tulis,"FILES/");
+strcat(tulis,namafile);
+strcat(tulis,"\r\n\n");
+if(tsv){
+	fputs(tulis,tsv);
+}
+```
+Apabila ada perintah add maka program akan melakukan cat terhadap inputan hingga berbentuk seperti ini :
+```
+Publisher:
+Tahun Publikasi:
+Filepath:
+```
+dan memasukkannya ke dalam files.tsv
 #### 1C
 #### 1D
 #### 1E
