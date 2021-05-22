@@ -752,7 +752,88 @@ void    loop_pipe(char ***cmd)
 (e).Setiap 1 file yang dikategorikan dioperasikan oleh 1 thread agar bisa berjalan secara paralel sehingga proses kategori bisa berjalan lebih cepat. <br>
 ### Cara Pengerjaan
 #### 3A
+```C
+if(strcmp(argv[1], "-f") == 0)
+{
+// masuk ke mode -f
+
+while (i < argc)
+{
+if(!is_regular_file(argv[i]))
+{
+	puts("EXIT not a file");
+	exit(EXIT_FAILURE);
+}
+
+pthread_create(&(tid), NULL, cek_file, (void *)argv[i]);
+pthread_join(tid, NULL);
+i++;
+}
+}
+```
 #### 3B
+```C
+else if(strcmp(argv[1], "-d") == 0)
+{
+// masuk ke mode -d
+
+if (argc > 3)
+{
+	puts("Mohon hanya memasukkan satu path directory!");
+	exit(EXIT_FAILURE);
+}
+
+list_file(argv[2]);
+read_path(argv[0]);
+
+}
+```
 #### 3C
+```C
+else if(strcmp(argv[1], "*") == 0)
+{
+// masuk ke mode *
+
+if (argc > 2)
+{
+	puts("Mohon tidak memasukkan argumen lain ketika menggunakan mode *");
+	exit(EXIT_FAILURE);
+}
+
+printf("path = ");
+puts(path);
+list_file(path);
+
+read_path(argv[0]);
+}
+```
 #### 3D
+```C
+else
+{ 
+	cek_folder("Unknown");
+	move_file2(path, "Unknown", nama_file, alamat_file);
+}
+```
 #### 3E
+```C
+while(fgets(buffer, bufferLength, filePointer))
+{
+nama_file = strrchr(buffer, '/') + 1;
+
+// Skip file txt dan file program
+if (strcmp(nama_file, "list_file.txt\n") == 0 || strcmp(nama_file, temp) == 0)
+{
+printf("%s skipped\n", nama_file);
+continue;
+}
+else{ 
+// WAKTU NYA MEMBUAT THREAD :)
+buffer[strcspn(buffer, "\r\n")] = 0;  // buat hapus enter di buffer
+
+pthread_create(&(tid), NULL, cek_file, (void *)buffer);
+
+pthread_join(tid, NULL);
+}
+}
+```
