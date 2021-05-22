@@ -76,6 +76,7 @@ int main(int argc, char const *argv[]) {
     char t_log[1000]={0};
     char file_down[1000]={0};
     char cari[200]={"\0"};
+    char hasil_cari[200]={0};
 
     /* open the file for writing*/
     fp = fopen ("akun.txt","a+");
@@ -263,8 +264,13 @@ int main(int argc, char const *argv[]) {
                         rewinddir(d);
 
                         for(z=0; z<o; z++){
-                            if(strstr(filesList[z],cari))
-                                printf("%s\n", filesList[z]);
+                            if(strstr(filesList[z],cari)){
+                                //printf("%s\n", filesList[z]);
+                                if((strstr(filesList[z],"old-")==0)&&z>0){
+                                strcat(hasil_cari,filesList[z]);
+                                strcat(hasil_cari,"\n");}
+                            }
+                            send(new_socket , hasil_cari , strlen(hasil_cari) , 0 );
                         }
                     }
                     else if (strcmp(buffer,"delete")==0){
@@ -287,7 +293,7 @@ int main(int argc, char const *argv[]) {
                                 fputs(t_log,log);
                             }
                         } else {
-                            printf("Error: unable to delete the file");
+                            send(new_socket , "file tidak ada\n" , strlen("file tidak ada\n") , 0 );
                         }
                     }
                     else if (strcmp(buffer,"down")==0){
