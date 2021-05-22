@@ -148,9 +148,202 @@ Filepath:
 ```
 dan memasukkannya ke dalam files.tsv
 #### 1C
-##### Server
 ##### Client
+Ketika client mengirim command add maka
+```C
+if(strcmp(cmd,"add")==0){
+	send(sock , add , strlen(add) , 0 );
+	printf("Publisher: ");
+	scanf ("%s",publisher);
+	send(sock , publisher , strlen(publisher) , 0 );
+	printf("Tahun Publikasi: ");
+	scanf ("%s",tahun);
+	send(sock , tahun , strlen(tahun) , 0 );
+	printf("Filepath: ");
+	scanf ("%s",filename);
+	send(sock , filename , strlen(filename) , 0 );
+	fp = fopen(filename, "r");
+	if(fp == NULL)
+	{
+		perror("[-]Error in reading file.");
+		exit(1);
+	}
+	send_file(fp,sock);
+	sleep(10);
+}
+```
+Fungsi send_file()
+```C
+void send_file(FILE *fp, int sockfd)
+{
+    char data[SIZE] = {0};
+
+    while(fgets(data, SIZE, fp)!=NULL)
+    {
+        if(send(sockfd, data, sizeof(data), 0)== -1)
+        {
+            perror("[-] Error in sending data");
+            exit(1);
+        }
+        bzero(data, SIZE);
+    }
+}
+```
+##### Server
+Ketika menerima command add dari client maka server akan :
+```C
+if (strcmp(buffer,"add")==0){
+	valread = read(new_socket , buffer, 1024); //publisher
+	memset(publish,0,sizeof(publish));
+	strcpy(publish,buffer);
+	valread = read(new_socket , buffer, 1024); //tahun
+	memset(tahun,0,sizeof(tahun));
+	strcpy(tahun,buffer);
+	valread = read(new_socket , buffer, 1024); //nama file
+	memset(namafile,0,sizeof(namafile));
+	strcpy(namafile,buffer);
+
+	strcat(tulis,"Publisher: ");
+	strcat(tulis,publish);
+	strcat(tulis,"\n");
+	strcat(tulis,"Tahun Publikasi: ");
+	strcat(tulis,tahun);
+	strcat(tulis,"\n");
+	strcat(tulis,"Filepath: ");
+	strcat(tulis,"FILES/");
+	strcat(tulis,namafile);
+	strcat(tulis,"\r\n\n");
+	//printf("%s",tulis);
+
+	if(tsv){
+	    fputs(tulis,tsv);
+	}
+	memset(tulis,0,sizeof(tulis));
+	//printf("%s",namafile);
+	addr_size = sizeof(new_addr);
+	write_file(new_socket,namafile);
+	memset(buffer,0,sizeof(buffer));
+
+
+	//log
+	strcat(t_log,"Tambah : ");
+	strcat(t_log,namafile);
+	strcat(t_log," (");
+	strcat(t_log,isi);
+	strcat(t_log,")\n");
+	if(log){
+	    fputs(t_log,log);
+	}
+}
+```
+Fungsi write file :
+``` C
+void write_file(int sockfd,char *file)
+{
+    int n; 
+    FILE *fp;
+    char filename[100]="FILES/";
+    strcat(filename,file);
+    char buffer[SIZE];
+
+    fp = fopen(filename, "w");
+    if(fp==NULL)
+    {
+        perror("[-]Error in creating file.");
+        exit(1);
+    }
+    while(1)
+    {
+        n = recv(sockfd, buffer, SIZE, 0);
+        if(n<=0)
+        {
+            break;
+            return;
+        }
+        fprintf(fp, "%s", buffer);
+        bzero(buffer, SIZE);
+    }
+    return;
+    
+}
+```
 #### 1D
+##### Client
+Jika menerima perintah download maka client akan :
+```C
+else if(strcmp(cmd,"download")==0){
+    send(sock , down , strlen(down) , 0 );
+    printf("Masukkan judul: ");
+    scanf("%s",download);
+    send(sock , download , strlen(download) , 0 );
+    addr_size = sizeof(new_addr);
+    write_file(sock,download);
+}
+```
+Fungsi Write File
+``` C
+void write_file(int sockfd,char *file)
+{
+    int n; 
+    FILE *fp;
+    char filename[100]="download/";
+    strcat(filename,file);
+    char buffer[SIZE];
+
+    fp = fopen(filename, "w");
+    if(fp==NULL)
+    {
+        perror("[-]Error in creating file.");
+        exit(1);
+    }
+    while(1)
+    {
+        n = recv(sockfd, buffer, SIZE, 0);
+        if(n<=0)
+        {
+            break;
+            return;
+        }
+        fprintf(fp, "%s", buffer);
+        bzero(buffer, SIZE);
+    }
+    return;
+    
+}
+```
+##### Server
+```C
+else if (strcmp(buffer,"down")==0){
+	memset(buffer,0,sizeof(buffer));
+	valread = read(new_socket , buffer, 1024); //file'
+	strcpy(file_down,"FILES/");
+	strcat(file_down,buffer);
+	down = fopen(file_down, "r");
+	if(down == NULL)
+	{
+	    perror("[-]Error in reading file.");
+	    exit(1);
+	}
+	send_file(down,new_socket);
+}
+```
+Fungsi send_file()
+```C
+void send_file(FILE *fp, int sockfd)
+{
+    char data[SIZE] = {0};
+
+    while(fgets(data, SIZE, fp)!=NULL)
+    {
+        if(send(sockfd, data, sizeof(data), 0)== -1)
+        {
+            perror("[-] Error in sending data");
+            exit(1);
+        }
+        bzero(data, SIZE);
+    }
+}
+```
 #### 1E
 #### 1F
 #### 1G
