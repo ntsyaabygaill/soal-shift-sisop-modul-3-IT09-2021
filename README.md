@@ -94,17 +94,35 @@ strcat(kirim,idc);
 strcat(kirim,":");
 strcat(kirim,pass);
 ```
-id dan password dibentuk dalam format
-```id:password```
-Selanjutnya format inilah yang dikirimkan kepada server
+id dan password dibentuk dalam format ```id:password``` selanjutnya format inilah yang dikirimkan kepada server.
 ##### Server
+jika login
+```C
+if (strcmp(buffer,"2")==0){
+	send(new_socket , sukses , strlen(sukses) , 0 );
+memset(buffer,0,sizeof(buffer));
+char * buff = 0;
+long length;
+FILE * f = fopen ("akun.txt", "rb");
+```
+Server akan mengirimkan status sukses masuk ke mode login ke client dan membuka file akun.txt, selanjutnya client akan meminta id dan password dari client.
+```C
+valread = read(new_socket , buffer, 1024);
+strcat(isi,buffer);
+ret = strstr(buff, isi);
+if (ret){
+	send(new_socket , login , strlen(login) , 0 );
+memset(buffer,0,sizeof(buffer));
+```
+Untuk memeriksa id dan password digunakan fungsi strstr, jika ada maka login berhasil
 
 #### 1B
+##### Server
 Membuka dan membuat file tsv
 ```C
-    FILE * tsv;
-    /* open the file for writing*/
-    tsv = fopen ("files.tsv","a+");
+FILE * tsv;
+/* open the file for writing*/
+tsv = fopen ("files.tsv","a+");
 ```
 kami menggunakan fopen untuk membuat dan membuka ```files.tsv```, disini juga kami menggunakan mode ```a+``` yang berfungsi untuk append sehingga data akan terus di tulis tanpa di overwrite.
 ```C
@@ -130,6 +148,8 @@ Filepath:
 ```
 dan memasukkannya ke dalam files.tsv
 #### 1C
+##### Server
+##### Client
 #### 1D
 #### 1E
 #### 1F
