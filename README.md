@@ -168,7 +168,7 @@ Tahun Publikasi:
 Filepath:
 ```
 dan memasukkannya ke dalam files.tsv
-<br><img src = "screenshots/1 add tsv.JPG"/><br>
+<br><img src = "screenshots/1 add tsv.JPG"/>
 #### 1C
 ##### Client
 Ketika client mengirim command add maka program client akan meminta user untuk memasukkan publisher, tahun publikasi, dan filepath, selanjutnya informasi-informasi tersebut akan dikirimkan ke server, namun apabila file tidak ada maka akan ditampilkan pesan error. Berikut adalah kode yang kami gunakan.
@@ -211,7 +211,7 @@ void send_file(FILE *fp, int sockfd)
     }
 }
 ```
-<br><img src = "screenshots/1 add.JPG"/><br>
+<br><img src = "screenshots/1 add.JPG"/>
 ##### Server
 Ketika menerima command add dari client maka server akan melakukan strcat kepada semua inputan hingga membentuk format sebagai berikut : <br>
 ```
@@ -303,7 +303,7 @@ void write_file(int sockfd,char *file)
 Fungsi ini digunakan untuk menerima data dari client dan menyatukan tiap byte yang diterima menjadi susunan yang sesuai dengan file yang dikirimkan. Dalam fungsi ini juga, kami menambahkan ```FILES/``` pada filename agar file yang diterima langsung disimpan di folder FILES. Selain itu jika terdapat kegagalan dalam membuat file maka akan muncul pesan error.
 <br>Pada file tsv<br><img src = "screenshots/1 add tsv.JPG"/><br>
 Pada file log<br><img src = "screenshots/1 add log.JPG"/><br>
-Pada folder FILES <br><img src = "screenshots/1 add files.JPG"/><br>
+Pada folder FILES <br><img src = "screenshots/1 add files.JPG"/>
 
 #### 1D
 ##### Client
@@ -349,7 +349,7 @@ void write_file(int sockfd,char *file)
     
 }
 ```
-<br><img src = "screenshots/1 download.JPG"/><br>
+<br><img src = "screenshots/1 download.JPG"/>
 ##### Server
 Program server akan menerima nama file yang akan di di download, apabila tidak ada maka akan diberikan pesan error, sedangkan jika tidak maka program akan masuk ke fungsi send_file() untuk mengirim data.
 ```C
@@ -386,7 +386,7 @@ void send_file(FILE *fp, int sockfd)
 ```
 <br>
 Pada Folder client
-<br><img src = "screenshots/1 download client.JPG"/><br>
+<br><img src = "screenshots/1 download client.JPG"/>
 #### 1E
 ##### Client
 Ketika client memasukkan command delete maka akan dikirimkan pesan kepada server untuk memasuki mode delete, dan client meminta nama file apa yang akan dihapus dan dikirimkan ke server.
@@ -404,7 +404,7 @@ else if(strcmp(cmd,"delete")==0){
 }
 ```
 Jika file tidak ada maka pesan error dari server akan ditampilkan kepada client.
-<br><img src = "screenshots/1 delete.JPG"/><br>
+<br><img src = "screenshots/1 delete.JPG"/>
 ##### Server
 ```C
 else if (strcmp(buffer,"delete")==0){
@@ -434,10 +434,10 @@ if(flag == 0) {
 Ketika memasuki mode delete server akan melakukan rename ke file yang bersangkutan dengan format ```old-nama.ekstensi``` setelah itu menulis di file log, jika file tidak ada maka akan dikirimkan pesan error ```"file tidak ada"```.
 <br>
 Pada Folder FILES
-<br><img src = "screenshots/1 delete files.JPG"/><br>
+<br><img src = "screenshots/1 delete files.JPG"/>
 <br>
 Pada file log
-<br><img src = "screenshots/1 delete log.JPG"/><br>
+<br><img src = "screenshots/1 delete log.JPG"/>
 #### 1F
 ##### Client
 Ketika menerima command see maka client akan mengirimkan perintah see ke server, selanjutnya client akan menampilkan hasil yang diperoleh dari server.
