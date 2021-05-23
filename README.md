@@ -95,6 +95,10 @@ strcat(kirim,":");
 strcat(kirim,pass);
 ```
 id dan password dibentuk dalam format ```id:password``` selanjutnya format inilah yang dikirimkan kepada server.
+<img src = "screenshots/1 register.JPG"/><br>
+<img src = "screenshots/1 login.JPG"/><br>
+
+
 ##### Server
 jika login
 ```C
@@ -114,8 +118,25 @@ if (ret){
 	send(new_socket , login , strlen(login) , 0 );
 memset(buffer,0,sizeof(buffer));
 ```
-Untuk memeriksa id dan password digunakan fungsi strstr, jika ada maka login berhasil
-
+Untuk memeriksa id dan password digunakan fungsi strstr, jika ada maka login berhasil.
+Jika register
+```C
+else if (strcmp(buffer,"1")==0){
+send(new_socket , sukses , strlen(sukses) , 0 );
+memset(buffer,0,sizeof(buffer));
+valread = read(new_socket , buffer, 1024);
+//printf("%s\n",buffer );
+strcat(isi,buffer);
+strcat(isi,"\n");
+if(fp){
+    fputs(isi,fp);
+}
+fclose (fp);
+send(new_socket , registered , strlen(registered) , 0 );
+}
+```
+Server akan menerima data dari client, selanjutnya data tersebut ditulis dalam file akun.txt.
+<br><img src = "screenshots/1 register akuntxt.JPG"/><br>
 #### 1B
 ##### Server
 Membuka dan membuat file tsv
@@ -147,6 +168,7 @@ Tahun Publikasi:
 Filepath:
 ```
 dan memasukkannya ke dalam files.tsv
+<br><img src = "screenshots/1 add tsv.JPG"/><br>
 #### 1C
 ##### Client
 Ketika client mengirim command add maka program client akan meminta user untuk memasukkan publisher, tahun publikasi, dan filepath, selanjutnya informasi-informasi tersebut akan dikirimkan ke server, namun apabila file tidak ada maka akan ditampilkan pesan error. Berikut adalah kode yang kami gunakan.
@@ -189,6 +211,7 @@ void send_file(FILE *fp, int sockfd)
     }
 }
 ```
+<br><img src = "screenshots/1 add.JPG"/><br>
 ##### Server
 Ketika menerima command add dari client maka server akan melakukan strcat kepada semua inputan hingga membentuk format sebagai berikut : <br>
 ```
@@ -277,7 +300,11 @@ void write_file(int sockfd,char *file)
     
 }
 ```
-Fungsi ini digunakan untuk menerima data dari client dan menyatukan tiap byte yang diterima menjadi susunan yang sesuai dengan file yang dikirimkan. Dalam fungsi ini juga, kami menambahkan ```FILES/``` pada filename agar file yang diterima langsung disimpan di folder FILES. Selain itu jika terdapat kegagalan dalam membuat file maka akan muncul pesan error. 
+Fungsi ini digunakan untuk menerima data dari client dan menyatukan tiap byte yang diterima menjadi susunan yang sesuai dengan file yang dikirimkan. Dalam fungsi ini juga, kami menambahkan ```FILES/``` pada filename agar file yang diterima langsung disimpan di folder FILES. Selain itu jika terdapat kegagalan dalam membuat file maka akan muncul pesan error.
+<br>Pada file tsv<br><img src = "screenshots/1 add tsv.JPG"/><br>
+Pada file log<br><img src = "screenshots/1 add log.JPG"/><br>
+Pada folder FILES <br><img src = "screenshots/1 add files.JPG"/><br>
+
 #### 1D
 ##### Client
 Jika menerima perintah download maka program client akan meminta user memasukkan judul file yang akan di download, selanjutnya nama file ini dikirimkan ke server. jika file ada di server maka server akan mengirimkan file ke client dan client akan memprosesnya dengan fungsi ```write_file()```.
