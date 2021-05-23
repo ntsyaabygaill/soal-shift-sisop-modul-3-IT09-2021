@@ -861,13 +861,13 @@ read_path(argv[0]);
 
 }
 ```
-Pada bagian ini jika program menerima input "-d" maka program akan memeriksa terlebih dahulu apakah folder yang dimasukkan hanya 1 atau lebih, jika lebih maka akan di berikan peringatan, dan program exit. Sedangkan jika tidak maka akan masuk ke dalam fungsi ```list_file``` dan ```read_path```.
-<img src = "screenshots/3d.JPG"/>
-<img src = "screenshots/3d run.JPG"/>
-<img src = "screenshots/3d hasil1.JPG"/>
-<img src = "screenshots/3d hasil2.JPG"/>
-<img src = "screenshots/3d hasil3.JPG"/>
-<img src = "screenshots/3d hasil4.JPG"/>
+Pada bagian ini jika program menerima input "-d" maka program akan memeriksa terlebih dahulu apakah folder yang dimasukkan hanya 1 atau lebih, jika lebih maka akan di berikan peringatan, dan program exit. Sedangkan jika tidak maka akan masuk ke dalam fungsi ```list_file``` dan ```read_path```.  
+<img src = "screenshots/3d.JPG"/>  
+<img src = "screenshots/3d run.JPG"/>  
+<img src = "screenshots/3d hasil1.JPG"/>  
+<img src = "screenshots/3d hasil2.JPG"/>  
+<img src = "screenshots/3d hasil3.JPG"/>  
+<img src = "screenshots/3d hasil4.JPG"/>  
 #### 3C
 ```C
 else if(strcmp(argv[1], "*") == 0)
@@ -887,13 +887,13 @@ list_file(path);
 read_path(argv[0]);
 }
 ```
-Ketika client memasukkan perintah ```*``` maka program akan memeriksa apakah ada argumen lain yang dimasukkan atau tidak, jika tidak maka program akan melakukan print path dan masuk ke fungsi ```list_file``` dan ```read_path```.
-<img src = "screenshots/3arte.JPG"/>
-<img src = "screenshots/3arte run.JPG"/>
-<img src = "screenshots/3arte hasil1.JPG"/>
-<img src = "screenshots/3arte hasil2.JPG"/>
-<img src = "screenshots/3arte hasil3.JPG"/>
-<img src = "screenshots/3arte hasil4.JPG"/>
+Ketika client memasukkan perintah ```*``` maka program akan memeriksa apakah ada argumen lain yang dimasukkan atau tidak, jika tidak maka program akan melakukan print path dan masuk ke fungsi ```list_file``` dan ```read_path```.  
+<img src = "screenshots/3arte.JPG"/>  
+<img src = "screenshots/3arte run.JPG"/>  
+<img src = "screenshots/3arte hasil1.JPG"/>  
+<img src = "screenshots/3arte hasil2.JPG"/>  
+<img src = "screenshots/3arte hasil3.JPG"/>  
+<img src = "screenshots/3arte hasil4.JPG"/>  
 #### 3D
 ```C
 else
