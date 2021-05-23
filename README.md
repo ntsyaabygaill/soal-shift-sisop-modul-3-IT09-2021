@@ -98,7 +98,6 @@ id dan password dibentuk dalam format ```id:password``` selanjutnya format inila
 <img src = "screenshots/1 register.JPG"/><br>
 <img src = "screenshots/1 login.JPG"/><br>
 
-
 ##### Server
 jika login
 ```C
