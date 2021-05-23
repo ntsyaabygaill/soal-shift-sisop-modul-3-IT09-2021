@@ -644,7 +644,8 @@ void *input_matriks_B(void *arg){ //fungsi matriks kedua
    return NULL;
 }
 ```
-Pada program soal2a.c ini kami membuat perkalian matriks dengan shared memory dan menampilkan hasilnya pada terminal.
+Pada program soal2a.c ini kami membuat perkalian matriks dengan shared memory dan menampilkan hasilnya pada terminal.<br>
+<img src = "screenshots/2a.JPG"/>
 #### 2B
 ```C
 #include <stdio.h>
