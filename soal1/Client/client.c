@@ -28,7 +28,7 @@ void write_file(int sockfd,char *file)
 {
     int n; 
     FILE *fp;
-    char filename[100]="download/";
+    char filename[100]="";
     strcat(filename,file);
     char buffer[SIZE];
 
