@@ -712,6 +712,7 @@ If a >= b  -> a!/(a-b)!
 If b > a -> a!
 If 0 -> 0
 ```
+<img src = "screenshots/2b.JPG"/>
 #### 2C
 ```C
 #include<stdio.h>
@@ -768,6 +769,7 @@ void    loop_pipe(char ***cmd)
 }
 ```
 Pada program soal2c.c ini kami menggunakan perintah ```ps aux | sort -nrk 3,3 | head -5``` untuk menampilkan 5 proses teratas yang memakan resource komputer.
+<img src = "screenshots/2c.JPG"/>
 ### Kendala
 Secara keseluruhan tidak ada kendala pada soal ini.
 ## Nomor 3
