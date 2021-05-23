@@ -349,6 +349,7 @@ void write_file(int sockfd,char *file)
     
 }
 ```
+<br><img src = "screenshots/1 download.JPG"/><br>
 ##### Server
 Program server akan menerima nama file yang akan di di download, apabila tidak ada maka akan diberikan pesan error, sedangkan jika tidak maka program akan masuk ke fungsi send_file() untuk mengirim data.
 ```C
@@ -383,6 +384,9 @@ void send_file(FILE *fp, int sockfd)
     }
 }
 ```
+<br>
+Pada Folder client
+<br><img src = "screenshots/1 download client.JPG"/><br>
 #### 1E
 ##### Client
 Ketika client memasukkan command delete maka akan dikirimkan pesan kepada server untuk memasuki mode delete, dan client meminta nama file apa yang akan dihapus dan dikirimkan ke server.
@@ -400,6 +404,7 @@ else if(strcmp(cmd,"delete")==0){
 }
 ```
 Jika file tidak ada maka pesan error dari server akan ditampilkan kepada client.
+<br><img src = "screenshots/1 delete.JPG"/><br>
 ##### Server
 ```C
 else if (strcmp(buffer,"delete")==0){
@@ -427,6 +432,12 @@ if(flag == 0) {
 }
 ```
 Ketika memasuki mode delete server akan melakukan rename ke file yang bersangkutan dengan format ```old-nama.ekstensi``` setelah itu menulis di file log, jika file tidak ada maka akan dikirimkan pesan error ```"file tidak ada"```.
+<br>
+Pada Folder FILES
+<br><img src = "screenshots/1 delete files.JPG"/><br>
+<br>
+Pada file log
+<br><img src = "screenshots/1 delete log.JPG"/><br>
 #### 1F
 ##### Client
 Ketika menerima command see maka client akan mengirimkan perintah see ke server, selanjutnya client akan menampilkan hasil yang diperoleh dari server.
