@@ -39,7 +39,7 @@ Muhammad Naufal Imantyasto | 05111940000041
 (h).running.log untuk mencatat penambahan atau pengurangan file <br>
 ### Cara Pengerjaan
 #### Library
-Berikut adalah library yang kami gunakan
+Berikut adalah library yang kami gunakan, baik pada server maupun pada client
 ``` C
 #include <stdio.h>
 #include <sys/socket.h>
@@ -149,7 +149,7 @@ Filepath:
 dan memasukkannya ke dalam files.tsv
 #### 1C
 ##### Client
-Ketika client mengirim command add maka
+Ketika client mengirim command add maka program client akan meminta user untuk memasukkan publisher, tahun publikasi, dan filepath, selanjutnya informasi-informasi tersebut akan dikirimkan ke server, namun apabila file tidak ada maka akan ditampilkan pesan error. Berikut adalah kode yang kami gunakan.
 ```C
 if(strcmp(cmd,"add")==0){
 	send(sock , add , strlen(add) , 0 );
@@ -172,7 +172,7 @@ if(strcmp(cmd,"add")==0){
 	sleep(10);
 }
 ```
-Fungsi send_file()
+Apabila file ada maka akan masuk ke fungsi send_file(). Jika saat pengiriman terjadi error maka akan ada pesan error, sedangkan jika tidak maka file sudah berhasil dikirimkan ke server.
 ```C
 void send_file(FILE *fp, int sockfd)
 {
@@ -190,7 +190,17 @@ void send_file(FILE *fp, int sockfd)
 }
 ```
 ##### Server
-Ketika menerima command add dari client maka server akan :
+Ketika menerima command add dari client maka server akan melakukan strcat kepada semua inputan hingga membentuk format sebagai berikut : <br>
+```
+Publisher:
+Tahun Publikasi:
+Filepath:
+```
+Selanjutnya file inilah yang akan dimasukkan ke dalam file ```files.tsv```. Setelah itu server akan menerima data dari fungsi send_file() yang ada client dan mengolahnya dengan fungsi write_file(). Kemudian server akan melakukan strcat lainnya hingga membentuk format sebagai berikut : <br>
+```
+Tambah : File1.ektensi (id:pass)
+```
+Dimana hasil dari strcat ini akan dimasukkan kedalam ```running.log```.
 ```C
 if (strcmp(buffer,"add")==0){
 	valread = read(new_socket , buffer, 1024); //publisher
@@ -236,7 +246,7 @@ if (strcmp(buffer,"add")==0){
 	}
 }
 ```
-Fungsi write file :
+Berikut adalah fungsi write_file() :
 ``` C
 void write_file(int sockfd,char *file)
 {
@@ -267,9 +277,10 @@ void write_file(int sockfd,char *file)
     
 }
 ```
+Fungsi ini digunakan untuk menerima data dari client dan menyatukan tiap byte yang diterima menjadi susunan yang sesuai dengan file yang dikirimkan. Dalam fungsi ini juga, kami menambahkan ```FILES/``` pada filename agar file yang diterima langsung disimpan di folder FILES. Selain itu jika terdapat kegagalan dalam membuat file maka akan muncul pesan error. 
 #### 1D
 ##### Client
-Jika menerima perintah download maka client akan :
+Jika menerima perintah download maka program client akan meminta user memasukkan judul file yang akan di download, selanjutnya nama file ini dikirimkan ke server. jika file ada di server maka server akan mengirimkan file ke client dan client akan memprosesnya dengan fungsi ```write_file()```.
 ```C
 else if(strcmp(cmd,"download")==0){
     send(sock , down , strlen(down) , 0 );
@@ -280,13 +291,13 @@ else if(strcmp(cmd,"download")==0){
     write_file(sock,download);
 }
 ```
-Fungsi Write File
+Fungsi write_file() ini berfungsi untuk mengolah byte atau data dari file yang telah dikirimkan oleh server, untuk disusun kembali menjadi file aslinya. Apabila pembuatan file gagal maka akan muncul pesan error.
 ``` C
 void write_file(int sockfd,char *file)
 {
     int n; 
     FILE *fp;
-    char filename[100]="download/";
+    char filename[100]="";
     strcat(filename,file);
     char buffer[SIZE];
 
@@ -312,6 +323,7 @@ void write_file(int sockfd,char *file)
 }
 ```
 ##### Server
+Program server akan menerima nama file yang akan di di download, apabila tidak ada maka akan diberikan pesan error, sedangkan jika tidak maka program akan masuk ke fungsi send_file() untuk mengirim data.
 ```C
 else if (strcmp(buffer,"down")==0){
 	memset(buffer,0,sizeof(buffer));
@@ -327,7 +339,7 @@ else if (strcmp(buffer,"down")==0){
 	send_file(down,new_socket);
 }
 ```
-Fungsi send_file()
+Fungsi send_file() ini berfungsi untuk mengirimkan file yang akan di download. Jika saat pengiriman terjadi error maka akan ada pesan error, sedangkan jika tidak maka file sudah berhasil dikirimkan ke server.
 ```C
 void send_file(FILE *fp, int sockfd)
 {
@@ -390,6 +402,7 @@ if(flag == 0) {
 Ketika memasuki mode delete server akan melakukan rename ke file yang bersangkutan dengan format ```old-nama.ekstensi``` setelah itu menulis di file log, jika file tidak ada maka akan dikirimkan pesan error ```"file tidak ada"```.
 #### 1F
 ##### Client
+Ketika menerima command see maka client akan mengirimkan perintah see ke server, selanjutnya client akan menampilkan hasil yang diperoleh dari server.
 ```C
 else if(strcmp(cmd,"see")==0){
     send(sock , see , strlen(see) , 0 );
@@ -400,6 +413,7 @@ else if(strcmp(cmd,"see")==0){
 }
 ```
 ##### Server
+Sedangkan pada server, maka server akan membuka ```files.tsv``` dan menyimpan isinya pada sebuah variabel (buf) dan di copy ke variabel content yang selanjutnya akan dikirim ke client.
 ```
 else if (strcmp(buffer,"see")==0){
 	char * buf = 0;
@@ -496,6 +510,7 @@ for(z=0; z<o; z++){
 ```
 Server akan melakukan loop untuk menyimpan setiap nama yang ada dalam directory FILES, kemudian untuk mencocokkan nama file digunakan fungsi strstr, dan terdapat filter untuk file yang sudah dihapus (old-) dengan menggunakan strstr juga.
 #### 1H
+Ketika ada penambahan file maka program akan melakukan strcat dari data-data yang ada hingga memenuhi format ```Tambah : File1.ektensi (id:pass)```. Selanjutnya string inilah yang akan dimasukkan ke dalam file ```running.log```.
 ##### Penambahan File
 ```C
 strcat(t_log,"Tambah : ");
@@ -508,6 +523,7 @@ if(log){
 }
 ```
 ##### Pengurangan File
+Ketika ada pengurangan file maka program akan melakukan strcat dari data-data yang ada hingga memenuhi format ```Hapus : File2.ektensi (id:pass)```. Selanjutnya string inilah yang akan dimasukkan ke dalam file ```running.log```.
 ```C
 trcat(t_log,"Hapus : ");
 strcat(t_log,namafile);
