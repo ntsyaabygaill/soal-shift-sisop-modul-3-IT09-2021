@@ -1118,3 +1118,4 @@ void *cek_file(void *arg)
 ```
 Fungsi ini berfungsi untuk melakukan checking pada file mulai dari path, ekstensi, move file, dan jika tidak ada ekstensi akan dipindahkan ke directory unknown.
 ### Kendala
+Secara keseluruhan tidak ada kendala pada soal ini.
