@@ -448,7 +448,7 @@ else if(strcmp(cmd,"see")==0){
     printf("\n%s",isi);
 }
 ```
-<img src = "screenshots/1 see.JPG"/>
+<br><img src = "screenshots/1 see.JPG"/>
 ##### Server
 Sedangkan pada server, maka server akan membuka ```files.tsv``` dan menyimpan isinya pada sebuah variabel (buf) dan di copy ke variabel content yang selanjutnya akan dikirim ke client.
 ```
@@ -494,7 +494,7 @@ else if(strcmp(cmd,"find")==0){
     printf("\n%s",isi);
 }
 ```
-<img src = "screenshots/1 find.JPG"/>
+<br><img src = "screenshots/1 find.JPG"/>
 ##### Server
 ```C
 else if (strcmp(buffer,"find")==0){
@@ -560,7 +560,7 @@ if(log){
 	fputs(t_log,log);
 }
 ```
-<img src = "screenshots/1 add log.JPG"/>
+<br><img src = "screenshots/1 add log.JPG"/>
 ##### Pengurangan File
 Ketika ada pengurangan file maka program akan melakukan strcat dari data-data yang ada hingga memenuhi format ```Hapus : File2.ektensi (id:pass)```. Selanjutnya string inilah yang akan dimasukkan ke dalam file ```running.log```.
 ```C
@@ -573,7 +573,7 @@ if(log){
 	fputs(t_log,log);
 }
 ```
-<img src = "screenshots/1 delete log.JPG"/>
+<br><img src = "screenshots/1 delete log.JPG"/>
 ### Kendala
 Kendala dalam pengerjaan program ini adalah files.tsv yang belum bisa menghapus data yang sudah dihapus, sehingga files.tsv hanya bisa memasukkan data.
 ## Nomor 2
