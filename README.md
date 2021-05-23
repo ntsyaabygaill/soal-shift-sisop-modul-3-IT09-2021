@@ -839,6 +839,11 @@ i++;
 }
 ```
 Pada bagian ini jika program menerima input "-f" maka program akan melakukan looping pada file yang telah diinputkan dan diperiksa apakah file tersebut merupakan regular file atau tidak, jika tidak maka akan dikeluarkan error, dan program exit, namun jika tidak akan dibuat thread, dan memanggil fungsi cek_file.
+<img src = "screenshots/3f run.JPG"/>
+<img src = "screenshots/3f hasil1.JPG"/>
+<img src = "screenshots/3f hasil2.JPG"/>
+<img src = "screenshots/3f hasil3.JPG"/>
+<img src = "screenshots/3f hasil4.JPG"/>
 #### 3B
 ```C
 else if(strcmp(argv[1], "-d") == 0)
