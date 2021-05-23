@@ -643,6 +643,7 @@ void *input_matriks_B(void *arg){ //fungsi matriks kedua
    return NULL;
 }
 ```
+Pada program soal2a.c ini kami membuat perkalian matriks dengan shared memory dan menampilkan hasilnya pada terminal.
 #### 2B
 ```C
 #include <stdio.h>
@@ -703,6 +704,12 @@ void *faktorial(void *arg){
     pthread_exit(0); // keluar thread
 }
 ```
+Selanjutnya pada soal2b.c ini kami membaca nilai yang sudah dihitung pada soal2a.c kemudian membuat membuat perhitungan matriks tersebut dengan matriks yang baru, dengan mengikuti aturan berikut ini :
+```
+If a >= b  -> a!/(a-b)!
+If b > a -> a!
+If 0 -> 0
+```
 #### 2C
 ```C
 #include<stdio.h>
@@ -758,7 +765,9 @@ void    loop_pipe(char ***cmd)
     }
 }
 ```
-
+Pada program soal2c.c ini kami menggunakan perintah ```ps aux | sort -nrk 3,3 | head -5``` untuk menampilkan 5 proses teratas yang memakan resource komputer.
+#### Kendala
+Secara keseluruhan tidak ada kendala pada soal ini.
 ## Nomor 3
 ### Soal
 (a).Program menerima opsi -f seperti contoh di atas, jadi pengguna bisa menambahkan argumen file yang bisa dikategorikan sebanyak yang diinginkan oleh pengguna. <br>
