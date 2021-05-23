@@ -383,7 +383,6 @@ void send_file(FILE *fp, int sockfd)
     }
 }
 ```
-<br>
 Pada Folder client
 <br><img src = "screenshots/1 download client.JPG"/>
 #### 1E
