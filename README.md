@@ -766,7 +766,7 @@ void    loop_pipe(char ***cmd)
 }
 ```
 Pada program soal2c.c ini kami menggunakan perintah ```ps aux | sort -nrk 3,3 | head -5``` untuk menampilkan 5 proses teratas yang memakan resource komputer.
-#### Kendala
+### Kendala
 Secara keseluruhan tidak ada kendala pada soal ini.
 ## Nomor 3
 ### Soal
@@ -796,6 +796,7 @@ i++;
 }
 }
 ```
+Pada bagian ini jika program menerima input "-f" maka program akan melakukan looping pada file yang telah diinputkan dan diperiksa apakah file tersebut merupakan regular file atau tidak, jika tidak maka akan dikeluarkan error, dan program exit, namun jika tidak akan dibuat thread, dan memanggil fungsi cek_file.
 #### 3B
 ```C
 else if(strcmp(argv[1], "-d") == 0)
@@ -813,6 +814,7 @@ read_path(argv[0]);
 
 }
 ```
+Pada bagian ini jika program menerima input "-d" maka program akan memeriksa terlebih dahulu apakah folder yang dimasukkan hanya 1 atau lebih, jika lebih maka akan di berikan peringatan, dan program exit. Sedangkan jika tidak maka akan masuk ke dalam fungsi ```list_file``` dan ```read_path```.
 #### 3C
 ```C
 else if(strcmp(argv[1], "*") == 0)
@@ -832,6 +834,7 @@ list_file(path);
 read_path(argv[0]);
 }
 ```
+Ketika client memasukkan perintah ```*``` maka program akan memeriksa apakah ada argumen lain yang dimasukkan atau tidak, jika tidak maka program akan melakukan print path dan masuk ke fungsi ```list_file``` dan ```read_path```.
 #### 3D
 ```C
 else
@@ -840,7 +843,9 @@ else
 	move_file2(path, "Unknown", nama_file, alamat_file);
 }
 ```
+Sedangkan untuk file yang tidak memiliki ekstensi akan dimasukkan dalam folder unknown
 #### 3E
+Berikut adalah program yang kami pakai untuk membuat thread.
 ```C
 while(fgets(buffer, bufferLength, filePointer))
 {
@@ -852,8 +857,7 @@ if (strcmp(nama_file, "list_file.txt\n") == 0 || strcmp(nama_file, temp) == 0)
 printf("%s skipped\n", nama_file);
 continue;
 }
-else{ 
-// WAKTU NYA MEMBUAT THREAD :)
+else{
 buffer[strcspn(buffer, "\r\n")] = 0;  // buat hapus enter di buffer
 
 pthread_create(&(tid), NULL, cek_file, (void *)buffer);
@@ -863,6 +867,7 @@ pthread_join(tid, NULL);
 }
 ```
 #### Fungsi
+Berikut adalah fungsi-fungsi yang kami gunakan dalam progam ini
 ##### Fungsi is_regular_file()
 ```C
 int is_regular_file(const char *path)
@@ -872,6 +877,7 @@ int is_regular_file(const char *path)
   return S_ISREG(path_stat.st_mode);
 } 
 ```
+Fungsi ini berfungsi untuk memeriksa apakah sebuah file merupakan file regular arau file unknown
 ##### Fungsi path_c()
 ```C
 void path_c(char *str)
@@ -893,6 +899,7 @@ void path_c(char *str)
   str[PATH_MAX] = '\0';
 }
 ```
+Fungsi ini berfungsi untuk menuju path dari sebuah file
 ##### Fungsi list_file()
 ```C
 void list_file(char *path)
@@ -923,6 +930,7 @@ void list_file(char *path)
   }
 }
 ```
+fungsi berfungsi untuk melakukan listing file-file apa saja yang ada dalam sebuah directory.
 ##### Fungsi read_path()
 ```C
 void read_path(char *arg)
@@ -976,6 +984,7 @@ void read_path(char *arg)
 ;
 }
 ```
+Fungsi ini ditujukan untuk membaca directory dan menyimpan file pada directory yang sesuai.
 ##### Fungsi cari_ekstensi()
 ```C
 char *cari_ekstensi(char *filename)
@@ -1006,6 +1015,7 @@ char *cari_ekstensi(char *filename)
   return extension;
 }
 ```
+Fungsi ini berfungsi untuk melakukan checking ekstensi file.
 ##### Fungsi cek_folder()
 ```C
 void* cek_folder(char *foldername)
@@ -1060,6 +1070,7 @@ void* cek_folder(char *foldername)
   }
 }
 ```
+Fungsi ini berfungsi untuk melakukan checking file dalam sebuah directory dan memeriksa apakah sebuah directory sudah ada atau belum.
 ##### Fungsi move_file()
 ```C
 void* move_file(char *pathc, char *ekstensi, char *nama_file, char *alamat_asal)
@@ -1078,6 +1089,7 @@ void* move_file(char *pathc, char *ekstensi, char *nama_file, char *alamat_asal)
   }
 }
 ```
+Fungsi ini berfungsi untuk memindahkan file ke directory yang bersesuaian
 ##### Fungsi cek_file()
 ```C
 void *cek_file(void *arg)
@@ -1104,4 +1116,5 @@ void *cek_file(void *arg)
   return NULL;
 }
 ```
-#### Kendala
+Fungsi ini berfungsi untuk melakukan checking pada file mulai dari path, ekstensi, move file, dan jika tidak ada ekstensi akan dipindahkan ke directory unknown.
+### Kendala
