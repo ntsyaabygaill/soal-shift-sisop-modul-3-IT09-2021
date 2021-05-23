@@ -534,7 +534,8 @@ if(log){
 	fputs(t_log,log);
 }
 ```
-
+### Kendala
+Kendala dalam pengerjaan program ini adalah files.tsv yang belum bisa menghapus data yang sudah dihapus, sehingga files.tsv hanya bisa memasukkan data.
 ## Nomor 2
 ### Soal
 (a).Membuat program perkalian matrix (4x3 dengan 3x6) dan menampilkan hasilnya. Matriks nantinya akan berisi angka 1-20 (tidak perlu dibuat filter angka). <br>
